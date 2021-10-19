@@ -7,176 +7,123 @@ struct node{
 };
 
 
-struct node *ptr,*start=NULL;
+struct node *ptr,*start,*newptr,*save,*rear;
 typedef struct node node;
 
-
-
-void createNewNode(){
-    ptr=(node*)malloc(sizeof(node));
+node* createNewNode(int data){
+    ptr=(node*) malloc(sizeof(node));
+    ptr->data=data;
     ptr->next=NULL;
-
+    return ptr;
 }
 
-void insertNode(){
-    int data,position,i;
-    node *temp;
+void insertBeg(node *np){
     if(start==NULL){
-
-       createNewNode();
-       if(ptr==NULL){
-           printf("\nOVERFLOW!");
-           exit(0);
-       }
-       printf("\n Enter data ");
-        scanf("%d",&data);
-        ptr->data=data;
-        start=ptr;
+        start=np;
+        rear=np;
     }
-
     else{
-
-        printf("\n1. Insert at beginning ");
-        printf("\n2. Insert at end ");
-        printf("\n3. Insert at specified position ");
-        printf("\nEnter your choice(1-3)");
-        int insChoi;
-        scanf("%d", &insChoi);
-
-        switch (insChoi) {
-            case 1:
-                printf("\n Enter data ");
-                scanf("%d",&data);
-                ptr->data=data;
-                ptr->next=start->next;
-//                printf("ptr->data = %d\n", ptr->data);
-                start=ptr;
-                break;
-
-            case 2:
-                temp=start;
-                while (temp->next!=NULL){
-                    temp=temp->next;
-                }
-                printf("\n Enter data ");
-                scanf("%d",&data);
-                ptr->data=data;
-                temp->next=ptr;
-                break;
-
-            case 3:
-                printf("\nEnter position for insertion ");
-                scanf("%d",&position);
-                i=1;
-                temp=start;
-                while (i<position){
-                    temp=temp->next;
-                    i++;
-                }
-                printf("\n Enter data ");
-                scanf("%d",&data);
-                ptr->data=data;
-                ptr->next=temp->next;
-                temp->next=ptr;
-        }
-
-//        printf("\nEnter position for insertion ");
-//        scanf("%d",&position);
-//        if(position==1){
-//            printf("\n Enter data ");
-//            scanf("%d",&data);
-//            ptr->data=data;
-//            ptr->next=start->next;
-//            start=ptr;
-//        }
-//
-//        else{
-//            i=1;
-//            temp=start;
-//            while (i<position){
-//                temp=temp->next;
-//                i++;
-//            }
-//
-//            if(temp->next!=NULL){
-//                printf("\n Enter data ");
-//                scanf("%d",&data);
-//                ptr->data=data;
-//                ptr->next=temp->next;
-//                temp->next=ptr;
-//            }
-//
-//            else{
-//                printf("\n Enter data ");
-//                scanf("%d",&data);
-//                ptr->data=data;
-//                temp->next=ptr;
-//            }
-//        }
+        np->next=start;
+        start=np;
     }
 }
 
-void deleteNode(){
-   if(start==NULL){
-       printf("\nUNDERFLOW!");
-       exit(0);
-   }
-
-   int position,i;
-   node *temp;
-    printf("\nEnter position for deletion  ");
-    scanf("%d",&position);
-
-    if(position==1){
-        temp=start;
-        start=start->next;
-        free(temp);
+void insertPos(node *np,int pos){
+    int flag=1;
+    save=start;
+    while(flag<pos){
+        save=save->next;
+        flag++;
     }
 
+    np->next=save->next;
+    save->next=np;
+}
+
+void insertEnd(node *np){
+    if(rear==NULL){
+        start=np;
+        rear=np;
+    }
     else{
-        i=1;
-        temp=start;
-        while(i<position){
-            temp=temp->next;
-            i++;
-        }
-
-        if(temp->next!=NULL){
-            ptr=temp->next;
-            temp->next=ptr->next;
-            temp=ptr;
-            free(temp);
-        }
-
-        else{
-            temp=start;
-            while(temp->next!=NULL){
-                ptr=temp;
-                temp=temp->next;
-            }
-            ptr->next=NULL;
-            free(temp);
-        }
+        rear->next=np;
+        rear=np;
     }
 }
 
 void displayNode(){
-    node *temp;
-    temp=start;
-    while(temp!=NULL){
-        printf("\n");
-        printf("%d --> ",temp->data);
-        temp=temp->next;
+    save=start;
+    while(save!=rear){
+        printf("%d-->",save->data);
+        save=save->next;
+    }
+    printf("%d",rear->data);
+    printf("\n");
+}
+
+void delBeg(){
+    if(start!=NULL) {
+        printf("\nBefore Deletion the linked list is \n");
+        displayNode();
+        save = start;
+        start = start->next;
+        free(save);
+        printf("\nNode deleted from beginning");
+        printf("\nAfter Deletion the linked list is \n");
+        displayNode();
+    }
+    else{
+        printf("\nUNDERFLOW!!\n");
+        exit(0);
     }
 }
 
+void delPosition(int pos){
+    int flag=1;node *temp;
+    save=start;
+    while(flag<pos){
+        save=save->next;
+        flag++;
+    }
+    temp=save->next;
+    save->next=temp->next;
+    free(temp);
+    printf("\nNode deleted from position %d",pos);
+    printf("\nAfter Deletion the linked list is \n");
+    displayNode();
+}
+
+void delEnd(){
+    node *temp;
+    if(rear!=NULL){
+        printf("\nBefore Deletion the linked list is \n");
+        displayNode();
+        save=rear;
+        temp=start;
+        while(temp->next!=rear){
+            temp=temp->next;
+        }
+        rear=temp;
+        free(save);
+        printf("\nAfter Deletion the linked list is \n");
+        displayNode();
+    }
+    else{
+        printf("\nUNDERFLOW!!\n");
+        exit(0);
+    }
+}
 
 int main() {
-
-    int choice;
+    start=rear=NULL;
+    int choice;char ch='y';
 
     printf("Program for performing operations on a Singly Linked List\n");
-    do {
+
+    int data,pos;
+
+
+    while(ch=='y'||ch=='Y') {
         printf("1.Insertion\n");
         printf("2.Deletion\n");
         printf("3.Display\n");
@@ -186,11 +133,92 @@ int main() {
         scanf("%d", &choice);
         switch (choice) {
             case 1:
-                insertNode();
+                printf("1.Insert at the beginning\n");
+                printf("2.Insert at a specific position\n");
+                printf("3.Insert at the end\n");
+                printf("\n Enter Your Choice(1-3) ");
+
+
+                scanf("%d", &choice);
+                switch (choice){
+                    case 1:
+                        printf("\n Enter data ");
+                        scanf("%d",&data);
+                        newptr=createNewNode(data);
+                        if(newptr==NULL){
+                            printf("\nOVERFLOW!");
+                            exit(0);
+                        }
+                        else{
+                        insertBeg(newptr);
+                        }
+
+                        break;
+
+                    case 2:
+                        printf("\n Enter data ");
+                        scanf("%d",&data);
+                        newptr=createNewNode(data);
+                        if(newptr==NULL) {
+                            printf("\nOVERFLOW!");
+                            exit(0);
+                        }
+
+                        printf("\n Enter position ");
+                        scanf("%d",&pos);
+
+                        insertPos(newptr,pos);
+                        break;
+
+                    case 3:
+                        printf("\n Enter data ");
+                        scanf("%d",&data);
+                        newptr=createNewNode(data);
+                        if(newptr==NULL) {
+                            printf("\nOVERFLOW!");
+                            exit(0);
+                        }
+
+                        else{
+                            insertEnd(newptr);
+                        }
+
+
+                        break;
+
+                    default:
+                        printf("\nWRONG CHOICE!!");
+                        }
+
                 break;
 
+
             case 2:
-                deleteNode();
+                printf("1.Delete from beginning\n");
+                printf("2.Delete from a specific position\n");
+                printf("3.Delete from the end\n");
+                printf("\n Enter Your Choice(1-3) ");
+
+                scanf("%d", &choice);
+                switch (choice) {
+                    case 1:
+                        delBeg();
+                        break;
+                    case 2:
+                        printf("\nBefore Deletion the linked list is \n");
+                        displayNode();
+                        printf("\n Enter position for deletion ");
+                        scanf("%d",&pos);
+                        delPosition(pos);
+                        break;
+
+                    case 3:
+                        delEnd();
+                        break;
+
+                    default:
+                        printf("\nWRONG CHOICE!!");
+                }
                 break;
 
             case 3:
@@ -198,14 +226,13 @@ int main() {
                 break;
 
             case 4:
-                exit(0);
+                exit(1);
 
             default:
                 printf("\nWRONG CHOICE!!");
         }
 
 
-    }while(1);
-    printf("ptr->data = %d\n", ptr->data);
+    }
     return 0;
 }
