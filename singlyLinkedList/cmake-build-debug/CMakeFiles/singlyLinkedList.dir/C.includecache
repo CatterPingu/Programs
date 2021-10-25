@@ -6,3 +6,9 @@
 
 #IncludeRegexTransform: 
 
+/Users/shlok/CLionProject/singlyLinkedList/main.c
+stdio.h
+-
+stdlib.h
+-
+
